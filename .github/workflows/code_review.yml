@@ -30,7 +30,7 @@ jobs:
       - name: Run code review
         run: python .github/scripts/code_review.py
         env:
-          SERVER_URL: 'https://87a6-221-167-206-130.ngrok-free.app/review'  # 여기에 ngrok URL을 사용
+          SERVER_URL: 'http://localhost:5002/review'  # 여기에 ngrok URL을 사용
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_PR_NUMBER: 7
           GITHUB_REPOSITORY: ${{ github.repository }}
