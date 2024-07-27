@@ -1,9 +1,24 @@
 name: Code Review
 
 on:
-  pull_request:
-    branches: [ her0807 ]
-  workflow_dispatch:
+  push:  # main, feat, develop 브랜치에  PUSH event 가 일어났을때
+    branches:
+      - main
+      - her0807
+      - feature/*
+      - fix/*
+      - refactor/*
+      - develop
+   
+  pull_request:  # main, feat, develop 브랜치에  PR event 가 일어났을때
+    branches:
+      - main
+      - her0807
+      - feature/*
+      - fix/*
+      - refactor/*
+      - develop
+
 
 jobs:
   code_review:
@@ -21,7 +36,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install requests langchain openai
+          pip install requests langchain openai jq
 
       - name: Extract PR Number
         id: extract_pr_number
