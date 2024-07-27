@@ -2,7 +2,6 @@ name: Code Review
 
 on:
   pull_request:
-    branches: [ her0807 ]
     types: [opened, synchronize]
 
 jobs:
@@ -10,26 +9,27 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v2
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
         with:
-          node-version: '16'
+          fetch-depth: 0  # Fetch all history for all branches and tags
 
-      - name: Install dependencies
-        run: npm install
-
-      - name: Extract PR diff
-        id: diff
+      - name: Fetch base branch
         run: |
-          echo "::set-output name=diff::$(git diff origin/main HEAD)"
+          git fetch origin ${{ github.base_ref }}:${{ github.base_ref }}
+        shell: bash
 
-      - name: Review code
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Get diff
+        run: |
+          git diff origin/${{ github.base_ref }}...HEAD > diff.txt
+        shell: bash
+
+      - name: Display diff
+        run: |
+          cat diff.txt
+
+      - name: Run Code Review
         run: |
           curl -X POST https://696c-221-167-206-130.ngrok-free.app/ \
           -H "Content-Type: application/json" \
-          -d "{\"diff\": \"${{ steps.diff.outputs.diff }}\", \"owner\": \"${{ github.repository_owner }}\", \"repo\": \"${{ github.event.repository.name }}\", \"pull_number\": ${{ github.event.number }}}"
+          -d "$(jq -n --arg diff "$(cat diff.txt)" --arg owner "${{ github.repository_owner }}" --arg repo "${{ github.event.repository.name }}" --arg pull_number "${{ github.event.number }}" '{diff: $diff, owner: $owner, repo: $repo, pull_number: $pull_number}')"
