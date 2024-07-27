@@ -30,7 +30,7 @@ jobs:
       - name: Run code review
         run: python .github/scripts/code_review.py
         env:
-          SERVER_URL: 'https://9697-221-167-206-130.ngrok-free.app/review'
+          SERVER_URL: 'https://f3b7-221-167-206-130.ngrok-free.app/review'
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_PR_NUMBER: 7
           GITHUB_REPOSITORY: ${{ github.repository }}
