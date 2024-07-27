@@ -23,13 +23,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-            curl -X POST https://696c-221-167-206-130.ngrok-free.app/ \
-            -H "Content-Type: application/json" \
-            -d @- <<EOF
-          {
-            "diff": "$(cat diff.txt)",
-            "owner": "${{ github.repository_owner }}",
-            "repo": "${{ github.event.repository.name }}",
-            "pull_number": "${{ github.event.number }}"
-          }
-          EOF
+          curl -X POST https://696c-221-167-206-130.ngrok-free.app/ \
+          -H "Content-Type: application/json" \
+          -d "$(jq -n --arg diff "$(cat diff.txt)" --arg owner "${{ github.repository_owner }}" --arg repo "${{ github.event.repository.name }}" --arg pull_number "${{ github.event.number }}" '{diff: $diff, owner: $owner, repo: $repo, pull_number: $pull_number}')"
