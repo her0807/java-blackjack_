@@ -3,6 +3,7 @@ name: Code Review
 on:
   pull_request:
     branches: [ her0807 ]
+  workflow_dispatch:
 
 jobs:
   code_review:
@@ -22,12 +23,19 @@ jobs:
           python -m pip install --upgrade pip
           pip install requests langchain openai
 
+      - name: Extract PR Number
+        id: extract_pr_number
+        run: echo "PR_NUMBER=$(jq -r .number < $GITHUB_EVENT_PATH)" >> $GITHUB_ENV
+
+      - name: Debug - Print PR Number
+        run: echo "PR Number: ${{ env.PR_NUMBER }}"
+
       - name: Run code review
         run: python .github/scripts/code_review.py
         env:
           SERVER_URL: 'https://61cb-121-133-157-137.ngrok-free.app/review'
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_PR_NUMBER: ${{ github.event.pull_request.number }}
+          GITHUB_PR_NUMBER: ${{ env.PR_NUMBER }}
           GITHUB_REPOSITORY: ${{ github.repository }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           GITHUB_BASE_REF: ${{ github.event.pull_request.base.ref }}
