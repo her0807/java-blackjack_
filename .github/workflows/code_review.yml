@@ -10,26 +10,26 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '16'
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Extract PR diff
-        id: diff
+      - name: Get diff
         run: |
-          echo "::set-output name=diff::$(git diff origin/main HEAD)"
+          git fetch origin main
+          git diff origin/main...HEAD > diff.txt
+        shell: bash
 
-      - name: Review code
+      - name: Run Code Review
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          curl -X POST https://696c-221-167-206-130.ngrok-free.app/ \
-          -H "Content-Type: application/json" \
-          -d "{\"diff\": \"${{ steps.diff.outputs.diff }}\", \"owner\": \"${{ github.repository_owner }}\", \"repo\": \"${{ github.event.repository.name }}\", \"pull_number\": ${{ github.event.number }}}"
+            curl -X POST https://696c-221-167-206-130.ngrok-free.app/ \
+            -H "Content-Type: application/json" \
+            -d @- <<EOF
+          {
+            "diff": "$(cat diff.txt)",
+            "owner": "${{ github.repository_owner }}",
+            "repo": "${{ github.event.repository.name }}",
+            "pull_number": "${{ github.event.number }}"
+          }
+          EOF
