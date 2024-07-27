@@ -28,9 +28,6 @@ def post_github_comment(pr_number, comment):
 def main():
     server_url = os.getenv('SERVER_URL')
     pr_number = os.getenv('GITHUB_PR_NUMBER')
-    if not pr_number:
-        raise ValueError("PR Number is not set")
-    print(f"PR Number: {pr_number}")  # 디버깅을 위해 PR 번호 출력
 
     # 변경된 파일 목록 가져오기
     base_branch = os.getenv('GITHUB_BASE_REF', 'main')
