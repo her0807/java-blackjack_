@@ -2,30 +2,34 @@ name: Code Review
 
 on:
   pull_request:
-    branches: [ main ]
+    branches: [ her0807 ]
+    types: [opened, synchronize]
+
 jobs:
-  code_review:
+  review:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Set up Python
-        uses: actions/setup-python@v2
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
         with:
-          python-version: '3.8'
+          node-version: '16'
 
       - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install requests langchain openai
+        run: npm install
 
-      - name: Run code review
-        run: python .github/scripts/code_review.py
+      - name: Extract PR diff
+        id: diff
+        run: |
+          echo "::set-output name=diff::$(git diff origin/main HEAD)"
+
+      - name: Review code
         env:
-          SERVER_URL: 'https://61cb-121-133-157-137.ngrok-free.app/review'
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_PR_NUMBER: ${{ github.event.pull_request.number }}
-          GITHUB_REPOSITORY: ${{ github.repository }}
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          curl -X POST https://696c-221-167-206-130.ngrok-free.app/ \
+          -H "Content-Type: application/json" \
+          -d "{\"diff\": \"${{ steps.diff.outputs.diff }}\", \"owner\": \"${{ github.repository_owner }}\", \"repo\": \"${{ github.event.repository.name }}\", \"pull_number\": ${{ github.event.number }}}"

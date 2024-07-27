@@ -2,32 +2,36 @@ name: Code Review
 
 on:
   pull_request:
-    branches:
-      - her0807
+    types: [opened, synchronize]
 
 jobs:
-  code_review:
+  review:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v2
-
-      - name: Set up Python
-        uses: actions/setup-python@v2
         with:
-          python-version: '3.8'
+          fetch-depth: 0  # Fetch all history for all branches and tags
 
-      - name: Install dependencies
+      - name: Fetch base branch
         run: |
-          python -m pip install --upgrade pip
-          pip install requests langchain openai
+          git fetch origin ${{ github.base_ref }}:${{ github.base_ref }}
+        shell: bash
 
-      - name: Run code review
-        run: python .github/scripts/code_review.py
+      - name: Get diff
+        run: |
+          git diff origin/${{ github.base_ref }}...HEAD > diff.txt
+        shell: bash
+
+      - name: Display diff
+        run: |
+          cat diff.txt
+
+      - name: Run Code Review
         env:
-          SERVER_URL: 'https://61cb-121-133-157-137.ngrok-free.app/review'
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_PR_NUMBER: ${{ github.event.pull_request.number }}
-          GITHUB_REPOSITORY: ${{ github.repository }}
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          curl -X POST https://696c-221-167-206-130.ngrok-free.app/ \
+          -H "Content-Type: application/json" \
+          -d "$(jq -n --arg diff "$(cat diff.txt)" --arg owner "${{ github.repository_owner }}" --arg repo "${{ github.event.repository.name }}" --arg pull_number "${{ github.event.number }}" '{diff: $diff, owner: $owner, repo: $repo, pull_number: $pull_number}')"

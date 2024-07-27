@@ -8,16 +8,17 @@ import java.util.Set;
 
 public class Card {
 
+    static {
+        VALUES = Arrays.stream(Denomination.values())
+            .flatMap(denomination -> Arrays.stream(Suit.values())
+                .map(suit -> new Card(denomination, suit)))
+            .collect(toUnmodifiableSet());
+    }
+
     public static final Set<Card> VALUES;
 
     private final Denomination denomination;
     private final Suit suit;
-
-    static {
-        VALUES = Arrays.stream(Denomination.values())
-                .flatMap(denomination -> Arrays.stream(Suit.values()).map(suit -> new Card(denomination, suit)))
-                .collect(toUnmodifiableSet());
-    }
 
     private Card(Denomination denomination, Suit suit) {
         this.denomination = denomination;
@@ -26,9 +27,9 @@ public class Card {
 
     public static Card of(Denomination denomination, Suit suit) {
         return VALUES.stream()
-                .filter(card -> card.hasSame(denomination, suit))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 카드입니다."));
+            .filter(card -> card.hasSame(denomination, suit))
+            .findFirst()
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 카드입니다."));
     }
 
     private boolean hasSame(Denomination denomination, Suit suit) {
@@ -40,7 +41,8 @@ public class Card {
     }
 
     public boolean isAceCard() {
-        return denomination.isAce();
+        boolean ace = denomination.isAce();
+        return ace;
     }
 
     public Denomination getDenomination() {
