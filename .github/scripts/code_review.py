@@ -30,11 +30,9 @@ def main():
     pr_number = os.getenv('GITHUB_PR_NUMBER')
 
     # 변경된 파일 목록 가져오기
-    base_branch = os.getenv('GITHUB_BASE_REF', 'main')
+    base_branch = os.getenv('GITHUB_BASE_REF', 'her0807')
     changed_files = os.popen(f'git fetch origin {base_branch} && git diff --name-only origin/{base_branch}').read().splitlines()
 
-    if not changed_files:
-        raise ValueError(f"No changed files detected from base branch {base_branch}")
 
     review_results = {
         'runtime_errors': [],
