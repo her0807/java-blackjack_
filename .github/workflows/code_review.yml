@@ -32,7 +32,7 @@ jobs:
         env:
           SERVER_URL: 'https://61cb-121-133-157-137.ngrok-free.app/review'  # 여기에 ngrok URL을 사용
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_PR_NUMBER: 6
+          GITHUB_PR_NUMBER: 7
           GITHUB_REPOSITORY: ${{ github.repository }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           GITHUB_BASE_REF: ${{ github.event.pull_request.base.ref }}
