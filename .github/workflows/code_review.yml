@@ -2,8 +2,7 @@ name: Code Review
 
 on:
   pull_request:
-    branches:
-      - her0807
+    branches: [ her0807 ]
 
 jobs:
   code_review:
@@ -31,3 +30,4 @@ jobs:
           GITHUB_PR_NUMBER: ${{ github.event.pull_request.number }}
           GITHUB_REPOSITORY: ${{ github.repository }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          GITHUB_BASE_REF: ${{ github.event.pull_request.base.ref }}
