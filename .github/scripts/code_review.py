@@ -1,6 +1,7 @@
 import os
 import requests
 import json
+import subprocess
 
 def post_code_for_review(server_url, code):
     headers = {'Content-Type': 'application/json'}
@@ -29,9 +30,16 @@ def main():
     server_url = os.getenv('SERVER_URL')
     pr_number = os.getenv('GITHUB_PR_NUMBER')
 
-    # 변경된 파일 목록 가져오기
+    # 기본 브랜치 설정
     base_branch = os.getenv('GITHUB_BASE_REF', 'her0807')
-    changed_files = os.popen(f'git fetch origin {base_branch} && git diff --name-only origin/{base_branch}').read().splitlines()
+
+    # 기본 브랜치 fetch
+    fetch_cmd = f'git fetch origin {base_branch}'
+    subprocess.run(fetch_cmd, shell=True, check=True)
+
+    # 변경된 파일 목록 가져오기
+    diff_cmd = f'git diff --name-only FETCH_HEAD...HEAD'
+    changed_files = subprocess.check_output(diff_cmd, shell=True).decode().splitlines()
 
 
     review_results = {
