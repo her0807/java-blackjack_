@@ -9,7 +9,7 @@ on:
       - fix/*
       - refactor/*
       - develop
-   
+
   pull_request:  # main, feat, develop 브랜치에  PR event 가 일어났을때
     branches:
       - main
