@@ -3,6 +3,7 @@ name: Code Review
 on:
   pull_request:
     branches: [ main ]
+
 jobs:
   code_review:
     runs-on: ubuntu-latest
