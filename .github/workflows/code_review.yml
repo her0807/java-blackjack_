@@ -2,7 +2,6 @@ name: Code Review
 
 on:
   pull_request:
-    branches: [ her0807 ]
     types: [opened, synchronize]
 
 jobs:
@@ -13,23 +12,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '16'
-
-      - name: Install dependencies
-        run: npm install
-
       - name: Extract PR diff
         id: diff
         run: |
+          git fetch origin main
           echo "::set-output name=diff::$(git diff origin/main HEAD)"
 
       - name: Review code
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          curl -X POST https://696c-221-167-206-130.ngrok-free.app/ \
+          curl -X POST http://localhost:3000/ \
           -H "Content-Type: application/json" \
           -d "{\"diff\": \"${{ steps.diff.outputs.diff }}\", \"owner\": \"${{ github.repository_owner }}\", \"repo\": \"${{ github.event.repository.name }}\", \"pull_number\": ${{ github.event.number }}}"
