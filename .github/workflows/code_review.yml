@@ -27,9 +27,6 @@ jobs:
         id: extract_pr_number
         run: echo "PR_NUMBER=$(jq -r .number < $GITHUB_EVENT_PATH)" >> $GITHUB_ENV
 
-      - name: Debug - Print PR Number
-        run: echo "PR Number: ${{ env.PR_NUMBER }}"
-
       - name: Run code review
         run: python .github/scripts/code_review.py
         env:
