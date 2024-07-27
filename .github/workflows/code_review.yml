@@ -2,7 +2,6 @@ name: Code Review
 
 on:
   pull_request:
-    branches: [ her0807 ]
     types: [opened, synchronize]
 
 jobs:
@@ -12,16 +11,22 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 0  # Fetch all history for all branches and tags
 
-      - name: Fetch her0807 branch
+      - name: Fetch base branch
         run: |
-          git fetch origin her0807:her0807
+          git fetch origin ${{ github.base_ref }}:${{ github.base_ref }}
         shell: bash
 
       - name: Get diff
         run: |
-          git diff her0807...HEAD > diff.txt
+          git diff origin/${{ github.base_ref }}...HEAD > diff.txt
         shell: bash
+
+      - name: Display diff
+        run: |
+          cat diff.txt
 
       - name: Run Code Review
         env:
