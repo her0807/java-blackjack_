@@ -1,24 +1,9 @@
 name: Code Review
 
 on:
-  push:  # main, feat, develop 브랜치에  PUSH event 가 일어났을때
-    branches:
-      - main
-      - her0807
-      - feature/*
-      - fix/*
-      - refactor/*
-      - develop
-
-  pull_request:  # main, feat, develop 브랜치에  PR event 가 일어났을때
-    branches:
-      - main
-      - her0807
-      - feature/*
-      - fix/*
-      - refactor/*
-      - develop
-
+  pull_request:
+    branches: [ her0807 ]
+  workflow_dispatch:
 
 jobs:
   code_review:
@@ -45,9 +30,9 @@ jobs:
       - name: Run code review
         run: python .github/scripts/code_review.py
         env:
-          SERVER_URL: 'https://61cb-121-133-157-137.ngrok-free.app/review'
+          SERVER_URL: 'https://61cb-121-133-157-137.ngrok-free.app/review'  # 여기에 ngrok URL을 사용
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_PR_NUMBER:  6
+          GITHUB_PR_NUMBER: 6
           GITHUB_REPOSITORY: ${{ github.repository }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           GITHUB_BASE_REF: ${{ github.event.pull_request.base.ref }}

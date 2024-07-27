@@ -8,6 +8,7 @@ def post_code_for_review(server_url, code):
     data = {'code': code}
     response = requests.post(server_url, headers=headers, data=json.dumps(data))
     response.raise_for_status()
+    print(f"Response from server: {response.text}")  # 서버 응답을 출력하여 확인
     return response.json()
 
 def post_github_comment(pr_number, comment):
@@ -29,9 +30,11 @@ def post_github_comment(pr_number, comment):
 def main():
     server_url = os.getenv('SERVER_URL')
     pr_number = os.getenv('GITHUB_PR_NUMBER')
+    if not pr_number:
+        raise ValueError("PR Number is not set")
 
     # 기본 브랜치 설정
-    base_branch = os.getenv('GITHUB_BASE_REF', 'her0807')
+    base_branch = os.getenv('GITHUB_BASE_REF', 'main')
 
     # 기본 브랜치 fetch
     fetch_cmd = f'git fetch origin {base_branch}'
@@ -41,6 +44,8 @@ def main():
     diff_cmd = f'git diff --name-only FETCH_HEAD...HEAD'
     changed_files = subprocess.check_output(diff_cmd, shell=True).decode().splitlines()
 
+    if not changed_files:
+        raise ValueError(f"No changed files detected from base branch {base_branch}")
 
     review_results = {
         'runtime_errors': [],
