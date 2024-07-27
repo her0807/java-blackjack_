@@ -37,10 +37,10 @@ public class Application {
     }
 
     private static Players createPlayers(Deck deck) {
-        List<Player> players = InputView.getNames().stream()
-                .map(name -> new Player(name, createBettingMoney(name), getInitCards(deck)))
-                .collect(toList());
-        return new Players(players);
+
+        return new Players(InputView.getNames().stream()
+            .map(name -> new Player(name, createBettingMoney(name), getInitCards(deck)))
+            .collect(toList()));
     }
 
     private static BettingMoney createBettingMoney(String playerName) {
@@ -86,8 +86,8 @@ public class Application {
     }
 
     private static void printResult(Dealer dealer, Players players) {
-        players.createPlayerResult(dealer);
         players.createDealerResult(dealer);
+        players.createPlayerResult(dealer);
         OutputView.printGameResult(GameResultsDto.from(players), GameResultDto.from(dealer));
     }
 }
