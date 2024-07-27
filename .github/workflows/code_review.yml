@@ -13,10 +13,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
+      - name: Fetch her0807 branch
+        run: |
+          git fetch origin her0807:her0807
+        shell: bash
+
       - name: Get diff
         run: |
-          git fetch origin main
-          git diff origin/main...HEAD > diff.txt
+          git diff her0807...HEAD > diff.txt
         shell: bash
 
       - name: Run Code Review
