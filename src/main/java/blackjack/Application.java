@@ -86,8 +86,8 @@ public class Application {
     }
 
     private static void printResult(Dealer dealer, Players players) {
-        players.createPlayerResult(dealer);
         players.createDealerResult(dealer);
+        players.createPlayerResult(dealer);
         OutputView.printGameResult(GameResultsDto.from(players), GameResultDto.from(dealer));
     }
 }
